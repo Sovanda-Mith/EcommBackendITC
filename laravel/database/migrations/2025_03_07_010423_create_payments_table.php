@@ -12,11 +12,11 @@ return new class () extends Migration {
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->dateTimeTz('payment_date');
-            $table->string('payment_method');
-            $table->decimal('amount', 10, 2);
+            $table->timestamp('payment_date')->nullable();
+            $table->string('payment_method', 100)->nullable();
+            $table->decimal('amount', 10, 2)->nullable();
             $table->bigInteger('order_id')->unsigned();
-            $table->bigInteger('customer_id')->unsigned();
+            $table->bigInteger('customer_id')->unsigned()->nullable();
             $table->timestamps();
 
             $table->foreign('order_id')->references('id')->on('orders');

@@ -10,13 +10,13 @@ return new class () extends Migration {
      */
     public function up(): void
     {
-        Schema::create('customers', function (Blueprint $table) {
+        Schema::create('activity_logs', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 100);
-            $table->string('email', 100)->nullable();
-            $table->string('address', 100)->nullable();
-            $table->string('phone', 100)->nullable();
-            $table->timestamps();
+            $table->string('model');
+            $table->unsignedBigInteger('model_id')->nullable();
+            $table->string('action');
+            $table->json('changes')->nullable();
+            $table->timestamp('created_at')->useCurrent();
         });
     }
 
@@ -25,6 +25,6 @@ return new class () extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('customers');
+        Schema::dropIfExists('activity_logs');
     }
 };
