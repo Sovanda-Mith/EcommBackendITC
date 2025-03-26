@@ -11,7 +11,7 @@ class Order extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['order_date'];
+    protected $fillable = ['order_date', 'customer_id'];
     protected $dates = ['deleted_at'];
 
     public function payments()
