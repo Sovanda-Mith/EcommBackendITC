@@ -12,7 +12,7 @@ class ProductController extends Controller
     {
         $products = Product::all();
 
-        return response()->json(["products" => $products]);
+        return response()->json(["products" => $products, "message" => "success"]);
     }
 
     public function createProduct(Request $request)
@@ -35,7 +35,7 @@ class ProductController extends Controller
 
         $newProduct->save();
 
-        return response()->json(["message" => "Product created"]);
+        return response()->json(["message" => "success"]);
     }
 
     public function getProduct($productId)
@@ -46,7 +46,7 @@ class ProductController extends Controller
             return response()->json(["message" => "Product not found"], 404);
         }
 
-        return response()->json(["product" => $product]);
+        return response()->json(["product" => $product, "message" => "success"]);
     }
 
     public function updateProduct($productId, Request $request)
@@ -73,7 +73,7 @@ class ProductController extends Controller
 
         $product->save();
 
-        return response()->json(["message" => "Product updated"]);
+        return response()->json(["message" => "success"]);
     }
 
     public function deleteProduct($productId)
@@ -86,14 +86,13 @@ class ProductController extends Controller
 
         $product->delete();
 
-        return response()->json(["message" => "Product deleted"]);
-
+        return response()->json(["message" => "success"]);
     }
 
     public function getProductsByCategory($categoryId)
     {
         $products = Product::where('category_id', $categoryId)->get();
 
-        return response()->json(["products" => $products]);
+        return response()->json(["products" => $products, "message" => "success"]);
     }
 }

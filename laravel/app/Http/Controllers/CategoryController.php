@@ -11,7 +11,7 @@ class CategoryController extends Controller
     public function getCategories()
     {
         $categories = Category::all();
-        return response()->json(['categories' => $categories]);
+        return response()->json(['categories' => $categories, 'message' => 'success']);
     }
 
     public function createCategory(Request $request)
@@ -33,7 +33,7 @@ class CategoryController extends Controller
             return response()->json(["message" => "Category not found"], 404);
         }
 
-        return response()->json($category);
+        return response()->json(["message" => "success", "category" => $category]);
     }
 
     public function updateCategory($categoryId, Request $request)
@@ -51,7 +51,7 @@ class CategoryController extends Controller
         $category->name = $validated['name'];
         $category->save();
 
-        return response()->json(["message" => "Category " . $validated['name'] . " updated"]);
+        return response()->json(["message" => "success"]);
     }
 
     public function deleteCategory($categoryId)
@@ -64,6 +64,6 @@ class CategoryController extends Controller
 
         $category->delete();
 
-        return response()->json(["message" => "Category deleted"]);
+        return response()->json(["message" => "success"]);
     }
 }
