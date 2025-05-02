@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Intervention\Image\Facades\Image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -55,9 +56,9 @@ class UploadController extends Controller
         })->save(storage_path('app/' . $thumbnailPath));
 
         // (Alternative) Using pure Imagick
-        $imagick = new Imagick(storage_path('app/uploads/' . $fileName));
-        $imagick->resizeImage(200, 200, Imagick::FILTER_TRIANGLE, 1);
-        $imagick->writeImage(storage_path('app/thumbnails/' . $fileName));
+        // $imagick = new Imagick(storage_path('app/uploads/' . $fileName));
+        // $imagick->resizeImage(200, 200, Imagick::FILTER_TRIANGLE, 1);
+        // $imagick->writeImage(storage_path('app/thumbnails/' . $fileName));
         // Update your Image model to store original and thumbnail paths (if ap
         return redirect()->route('gallery.index')->with('success', 'Image uploaded');
     }
