@@ -1,7 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/user.entity';
 import { Repository } from 'typeorm';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -14,20 +16,35 @@ export class UserService {
     return this.usersRepo.find({ relations: ['tasks'] });
   }
 
-  getUser(username: string): Promise<User | null> {
-    return this.usersRepo.findOne({
+  async getUserById(id: number) {
+    const user = await this.usersRepo.findOne({
+      where: { id },
+      relations: ['tasks'],
+    });
+    if (!user) {
+      throw new NotFoundException(`User with id ${id} not found`);
+    }
+    return user;
+  }
+
+  async getUser(username: string) {
+    const user = await this.usersRepo.findOne({
       where: { username },
       relations: ['tasks'],
     });
+    if (!user) {
+      throw new NotFoundException(`User with username ${username} not found`);
+    }
+    return user;
   }
 
-  createUser(userData: Partial<User>) {
-    const user = this.usersRepo.create(userData);
+  createUser(createUserDto: CreateUserDto) {
+    const user = this.usersRepo.create(createUserDto);
     return this.usersRepo.save(user);
   }
 
-  updateUser(username: string, userData: Partial<User>) {
-    return this.usersRepo.update({ username }, userData);
+  updateUser(username: string, updateUserDto: UpdateUserDto) {
+    return this.usersRepo.update({ username }, updateUserDto);
   }
 
   deleteUser(username: string) {

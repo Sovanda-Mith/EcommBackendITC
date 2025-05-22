@@ -8,6 +8,8 @@ import {
   Delete,
 } from '@nestjs/common';
 import { UserService } from './user.service';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
 export class UserController {
@@ -18,24 +20,27 @@ export class UserController {
     return this.userService.getAllUsers();
   }
 
+  @Get('/users/:id')
+  getUserById(@Param('id') id: number): any {
+    return this.userService.getUserById(id);
+  }
+
   @Get('/:username')
   getUser(@Param('username') username: string): any {
     return this.userService.getUser(username);
   }
 
   @Post('/users')
-  createUser(
-    @Body() body: { username: string; email: string; password: string },
-  ): any {
-    return this.userService.createUser(body);
+  createUser(@Body() CreateUserDto: CreateUserDto): any {
+    return this.userService.createUser(CreateUserDto);
   }
 
   @Patch('/users/:username')
   updateUser(
     @Param('username') username: string,
-    @Body() body: { username: string; email: string; password: string },
+    @Body() updateUserDto: UpdateUserDto,
   ): any {
-    return this.userService.updateUser(username, body);
+    return this.userService.updateUser(username, updateUserDto);
   }
 
   @Delete('/users/:username')

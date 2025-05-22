@@ -26,7 +26,6 @@ export class CreateTaskDto {
   @Type(() => Date)
   completedAt?: Date;
 
-  @IsOptional()
   @IsInt()
   userId: number;
 }

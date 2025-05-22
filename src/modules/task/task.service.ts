@@ -20,8 +20,15 @@ export class TaskService {
     return this.tasksRepo.find({ relations: ['user'] });
   }
 
-  getTask(id: number) {
-    return this.tasksRepo.findOne({ where: { id }, relations: ['user'] });
+  async getTask(id: number) {
+    const task = await this.tasksRepo.findOne({
+      where: { id },
+      relations: ['user'],
+    });
+    if (!task) {
+      throw new NotFoundException(`Task with id ${id} not found`);
+    }
+    return task;
   }
 
   async createTask(createTaskDto: CreateTaskDto) {
