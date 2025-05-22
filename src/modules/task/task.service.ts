@@ -1,34 +1,77 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Task } from 'src/tasks/task.entity';
 import { Repository } from 'typeorm';
+import { CreateTaskDto } from './dto/create-task.dto';
+import { UpdateTaskDto } from './dto/update-task.dto';
+import { User } from 'src/users/user.entity';
 
 @Injectable()
-export class UserService {
+export class TaskService {
   constructor(
     @InjectRepository(Task)
     private tasksRepo: Repository<Task>,
+
+    @InjectRepository(User)
+    private usersRepo: Repository<User>,
   ) {}
 
-  create(taskData: Partial<Task>) {
-    const user = this.tasksRepo.create(taskData);
-    return this.tasksRepo.save(user);
+  getAllTasks() {
+    return this.tasksRepo.find({ relations: ['user'] });
   }
 
-  findAll() {
-    return this.tasksRepo.find();
+  getTask(id: number) {
+    return this.tasksRepo.findOne({ where: { id }, relations: ['user'] });
   }
 
-  findOne(id: number) {
-    return this.tasksRepo.findOne({ where: { id } });
+  async createTask(createTaskDto: CreateTaskDto) {
+    const user = await this.usersRepo.findOneBy({
+      id: createTaskDto.userId,
+    });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    const task = this.tasksRepo.create({
+      name: createTaskDto.name,
+      description: createTaskDto.description,
+      createdAt: createTaskDto.createdAt,
+      completedAt: createTaskDto.completedAt,
+      user: user,
+    });
+
+    return this.tasksRepo.save(task);
   }
 
-  async update(id: number, updateData: Partial<Task>) {
-    await this.tasksRepo.update(id, updateData);
-    return this.findOne(id);
+  async updateTask(id: number, updateTaskDto: UpdateTaskDto) {
+    const task = await this.tasksRepo.findOneBy({ id });
+    if (!task) {
+      throw new NotFoundException('Task not found');
+    }
+
+    if (updateTaskDto.userId !== undefined) {
+      const user = await this.usersRepo.findOneBy({
+        id: updateTaskDto.userId,
+      });
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+      task.user = user;
+    }
+    if (updateTaskDto.name !== undefined) task.name = updateTaskDto.name;
+    if (updateTaskDto.description !== undefined)
+      task.description = updateTaskDto.description;
+    if (updateTaskDto.createdAt !== undefined)
+      task.createdAt = updateTaskDto.createdAt;
+    if (updateTaskDto.completedAt !== undefined)
+      task.completedAt = updateTaskDto.completedAt;
+    return this.tasksRepo.save(task);
   }
 
-  remove(id: number) {
+  deleteTask(id: number) {
     return this.tasksRepo.delete(id);
+  }
+
+  deleteAllTasks() {
+    return this.tasksRepo.clear();
   }
 }

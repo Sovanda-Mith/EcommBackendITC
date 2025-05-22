@@ -8,32 +8,51 @@ import {
   Post,
 } from '@nestjs/common';
 import { TaskService } from './task.service';
+import { CreateTaskDto } from './dto/create-task.dto';
+import { UpdateTaskDto } from './dto/update-task.dto';
 
 @Controller('tasks')
 export class TasksController {
   constructor(private readonly taskService: TaskService) {}
 
+  @Get('/')
+  getAllTasks(): any {
+    return this.taskService.getAllTasks();
+  }
+
   @Get('/:id')
-  getTask(@Param('id') id: string) {
+  getTask(@Param('id') id: number): any {
     return this.taskService.getTask(id);
   }
+
   @Post('/')
-  createTask(@Body() body: any) {
-    return this.taskService.createTask(body);
+  createTask(@Body() createTaskDto: CreateTaskDto): any {
+    return this.taskService.createTask(createTaskDto);
   }
 
   @Patch('/:id/done')
-  markTaskAsDone(@Body() body: any, @Param('id') id: string) {
-    return this.taskService.updateTask(id, body);
+  markTaskAsDone(
+    @Body() updateTaskDto: UpdateTaskDto,
+    @Param('id') id: number,
+  ): any {
+    return this.taskService.updateTask(id, updateTaskDto);
   }
 
   @Patch('/:id/pending')
-  markTaskAsPending(@Body() body: any, @Param('id') id: string) {
-    return this.taskService.updateTask(id, body);
+  markTaskAsPending(
+    @Body() UpdateTaskDto: UpdateTaskDto,
+    @Param('id') id: number,
+  ): any {
+    return this.taskService.updateTask(id, UpdateTaskDto);
+  }
+
+  @Delete('/clear-all')
+  deleteAllTasks(): any {
+    return this.taskService.deleteAllTasks();
   }
 
   @Delete('/:id')
-  deleteTask(@Param('id') id: string) {
+  deleteTask(@Param('id') id: number): any {
     return this.taskService.deleteTask(id);
   }
 }

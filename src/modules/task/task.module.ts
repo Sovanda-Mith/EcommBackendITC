@@ -7,8 +7,8 @@ import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Task]), UserModule],
-  controllers: [TasksController],
   providers: [TaskService],
+  controllers: [TasksController],
   exports: [],
   // Add any other necessary configurations or modules
 })

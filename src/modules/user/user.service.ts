@@ -10,25 +10,27 @@ export class UserService {
     private usersRepo: Repository<User>,
   ) {}
 
-  create(userData: Partial<User>) {
+  getAllUsers() {
+    return this.usersRepo.find({ relations: ['tasks'] });
+  }
+
+  getUser(username: string): Promise<User | null> {
+    return this.usersRepo.findOne({
+      where: { username },
+      relations: ['tasks'],
+    });
+  }
+
+  createUser(userData: Partial<User>) {
     const user = this.usersRepo.create(userData);
     return this.usersRepo.save(user);
   }
 
-  findAll() {
-    return this.usersRepo.find({ relations: ['tasks'] });
+  updateUser(username: string, userData: Partial<User>) {
+    return this.usersRepo.update({ username }, userData);
   }
 
-  findOne(id: number) {
-    return this.usersRepo.findOne({ where: { id }, relations: ['tasks'] });
-  }
-
-  async update(id: number, updateData: Partial<User>) {
-    await this.usersRepo.update(id, updateData);
-    return this.findOne(id);
-  }
-
-  remove(id: number) {
-    return this.usersRepo.delete(id);
+  deleteUser(username: string) {
+    return this.usersRepo.delete({ username });
   }
 }
